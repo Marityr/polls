@@ -1,0 +1,10 @@
+info:
+  contact: {}
+paths:
+  /:
+    get:
+      responses: {}
+      summary: HomePage
+      tags:
+      - HomePage
+swagger: "2.0"
