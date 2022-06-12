@@ -3,6 +3,7 @@ package tools
 import (
 	"log"
 
+	"github.com/Marityr/polls/shema"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -10,7 +11,7 @@ import (
 var DB *gorm.DB
 
 func Init() {
-	dbURL := "postgres://mojas:1111@localhost:5432/gobase"
+	dbURL := "postgres://mojas:1111@localhost:5432/polls"
 
 	db, err := gorm.Open(postgres.Open(dbURL), &gorm.Config{
 		// отключение зависимости связей на уровне базы
@@ -22,8 +23,19 @@ func Init() {
 		log.Fatalln(err)
 	}
 
-	// db.AutoMigrate(
-	// )
+	db.AutoMigrate(
+		&shema.User{},
+		&shema.UserData{},
+
+		&shema.BlockQuiz{},
+		&shema.Quiz{},
+		&shema.Questions{},
+		&shema.Answers{},
+
+		&shema.Cause{},
+
+		&shema.Result{},
+	)
 
 	// Create
 	// db.Create(&shema.Book{Id: 1, Title: "War and World", Author: "Tolstoy", Desc: "Author"})

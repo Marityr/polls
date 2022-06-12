@@ -1,9 +1,9 @@
 package main
 
 import (
-	"gitlab.com/dmitriy.woronow/go-rest-api.git/docs"
-	"gitlab.com/dmitriy.woronow/go-rest-api.git/handler"
-	"gitlab.com/dmitriy.woronow/go-rest-api.git/tools"
+	"github.com/Marityr/polls/docs"
+	"github.com/Marityr/polls/handler"
+	"github.com/Marityr/polls/tools"
 )
 
 func SwaggerInit() {

@@ -1,4 +1,4 @@
-module gitlab.com/dmitriy.woronow/go-rest-api.git
+module github.com/Marityr/polls.git
 
 go 1.18
 
