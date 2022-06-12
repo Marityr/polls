@@ -1,9 +1,9 @@
 package main
 
 import (
-	"github.com/Marityr/polls/docs"
-	"github.com/Marityr/polls/handler"
-	"github.com/Marityr/polls/tools"
+	"github.com/Marityr/polls.git/docs"
+	"github.com/Marityr/polls.git/handler"
+	"github.com/Marityr/polls.git/tools"
 )
 
 func SwaggerInit() {
