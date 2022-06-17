@@ -3,7 +3,7 @@ package tools
 import (
 	"log"
 
-	"github.com/Marityr/polls/shema"
+	"github.com/Marityr/polls.git/shema"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -11,7 +11,7 @@ import (
 var DB *gorm.DB
 
 func Init() {
-	dbURL := "postgres://mojas:1111@localhost:5432/polls"
+	dbURL := "postgres://mojas:1111@localhost:5432/pollsdb"
 
 	db, err := gorm.Open(postgres.Open(dbURL), &gorm.Config{
 		// отключение зависимости связей на уровне базы
@@ -24,7 +24,7 @@ func Init() {
 	}
 
 	db.AutoMigrate(
-		&shema.User{},
+		&shema.Users{},
 		&shema.UserData{},
 
 		&shema.BlockQuiz{},

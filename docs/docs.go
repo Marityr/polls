@@ -16,12 +16,60 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/": {
-            "get": {
-                "tags": [
-                    "HomePage"
+        "/auth/signup": {
+            "post": {
+                "consumes": [
+                    "application/json"
                 ],
-                "summary": "HomePage",
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "signUp",
+                "parameters": [
+                    {
+                        "description": "Body",
+                        "name": "value",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/blockquiz/all": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "BlockQuiz"
+                ],
+                "summary": "BlockQuizAll",
+                "responses": {}
+            }
+        },
+        "/blockquiz/{id}": {
+            "get": {
+                "consumes": [
+                    "application/json",
+                    "application/json"
+                ],
+                "tags": [
+                    "BlockQuiz"
+                ],
+                "summary": "BlockQuizID",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
                 "responses": {}
             }
         }

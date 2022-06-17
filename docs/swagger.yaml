@@ -1,10 +1,42 @@
 info:
   contact: {}
 paths:
-  /:
-    get:
+  /auth/signup:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Body
+        in: body
+        name: value
+        required: true
+        schema:
+          type: string
       responses: {}
-      summary: HomePage
+      summary: signUp
       tags:
-      - HomePage
+      - Auth
+  /blockquiz/{id}:
+    get:
+      consumes:
+      - application/json
+      - application/json
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses: {}
+      summary: BlockQuizID
+      tags:
+      - BlockQuiz
+  /blockquiz/all:
+    get:
+      consumes:
+      - application/json
+      responses: {}
+      summary: BlockQuizAll
+      tags:
+      - BlockQuiz
 swagger: "2.0"

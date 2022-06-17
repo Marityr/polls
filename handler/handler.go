@@ -5,18 +5,11 @@ import (
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	swaggerfiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
-	"github.com/swaggo/gin-swagger/swaggerFiles"
 )
 
-// @Summary HomePage
-// @Tags    HomePage
-// @Router  / [get]
-func HomePage(c *gin.Context) {
-	c.JSON(200, gin.H{
-		"message": "Hello World",
-	})
-}
+var identityKey = "id"
 
 func HandlerInit() {
 	r := gin.Default()
@@ -52,8 +45,26 @@ func HandlerInit() {
 		MaxAge:           12 * time.Hour,
 	}))
 
-	r.GET("/", HomePage)
+	// users := r.Group("/auth")
+	// {
+	// 	users.POST("/signup", signUp)
+	// }
 
-	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+	r.POST("/auth/signup", signUp)
+
+	blockquiz := r.Group("/blockquiz")
+	{
+		blockquiz.GET("/all", GetBlockQuizAll)
+		blockquiz.GET("/:id", GetBlockQuizId)
+	}
+
+	// tmp := AuthMiddleware()
+
+	// users.POST("/login", tmp.LoginHandler)
+
+	// users.Use(tmp.MiddlewareFunc())
+	// users.GET("/add", AddUser)
+
+	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 	r.Run()
 }
