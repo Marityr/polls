@@ -14,4 +14,12 @@ type (
 		Count   int   `json:"count,omitempty"`
 		Payment bool  `json:"payment,omitempty"`
 	}
+
+	Group struct {
+		Id   int
+		Name string
+	}
+
+	Permission struct {
+	}
 )

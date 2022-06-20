@@ -54,8 +54,44 @@ func HandlerInit() {
 
 	blockquiz := r.Group("/blockquiz")
 	{
-		blockquiz.GET("/all", GetBlockQuizAll)
-		blockquiz.GET("/:id", GetBlockQuizId)
+		blockquiz.GET("/all", BlockQuizAll)
+		blockquiz.GET("/:id", BlockQuizId)
+		blockquiz.POST("/add", BlockQuizAdd)
+	}
+
+	quiz := r.Group("/quiz")
+	{
+		quiz.GET("/all", QuizAll)
+		quiz.GET("/:id", QuizId)
+		quiz.POST("/add", QuizAdd)
+	}
+
+	questions := r.Group("/questions")
+	{
+		questions.GET("/all", QuestionsAll)
+		questions.GET("/:id", QuestionsId)
+		questions.POST("/add", QuestionsAdd)
+	}
+
+	answers := r.Group("/answers")
+	{
+		answers.GET("/all", AnswersAll)
+		answers.GET("/:id", AnswersId)
+		answers.POST("/add", AnswersAdd)
+	}
+
+	cause := r.Group("/cause")
+	{
+		cause.GET("/all", CauseAll)
+		cause.GET("/:id", CauseId)
+		cause.POST("/add", CauseAdd)
+	}
+
+	result := r.Group("/result")
+	{
+		result.GET("/all", ResultAll)
+		result.GET("/:id", ResultId)
+		result.POST("/add", ResultAdd)
 	}
 
 	// tmp := AuthMiddleware()

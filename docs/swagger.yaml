@@ -1,6 +1,43 @@
 info:
   contact: {}
 paths:
+  /ansvers/{id}:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses: {}
+      summary: AnswersID
+      tags:
+      - Answers
+  /ansvers/add:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Body
+        in: body
+        name: value
+        required: true
+        schema:
+          type: string
+      responses: {}
+      summary: AnswersAdd
+      tags:
+      - Answers
+  /ansvers/all:
+    get:
+      consumes:
+      - application/json
+      responses: {}
+      summary: AnswersAll
+      tags:
+      - Answers
   /auth/signup:
     post:
       consumes:
@@ -20,7 +57,6 @@ paths:
     get:
       consumes:
       - application/json
-      - application/json
       parameters:
       - description: id
         in: path
@@ -31,6 +67,21 @@ paths:
       summary: BlockQuizID
       tags:
       - BlockQuiz
+  /blockquiz/add:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Body
+        in: body
+        name: value
+        required: true
+        schema:
+          type: string
+      responses: {}
+      summary: BlockQuizAdd
+      tags:
+      - BlockQuiz
   /blockquiz/all:
     get:
       consumes:
@@ -39,4 +90,152 @@ paths:
       summary: BlockQuizAll
       tags:
       - BlockQuiz
+  /cause/{id}:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses: {}
+      summary: CauseID
+      tags:
+      - Cause
+  /cause/add:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Body
+        in: body
+        name: value
+        required: true
+        schema:
+          type: string
+      responses: {}
+      summary: CauseAdd
+      tags:
+      - Cause
+  /cause/all:
+    get:
+      consumes:
+      - application/json
+      responses: {}
+      summary: CauseAll
+      tags:
+      - Cause
+  /questions/{id}:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses: {}
+      summary: QuestionsID
+      tags:
+      - Questions
+  /questions/add:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Body
+        in: body
+        name: value
+        required: true
+        schema:
+          type: string
+      responses: {}
+      summary: QuestionsAdd
+      tags:
+      - Questions
+  /questions/all:
+    get:
+      consumes:
+      - application/json
+      responses: {}
+      summary: QuestionsAll
+      tags:
+      - Questions
+  /quiz/{id}:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses: {}
+      summary: QuizID
+      tags:
+      - Quiz
+  /quiz/add:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Body
+        in: body
+        name: value
+        required: true
+        schema:
+          type: string
+      responses: {}
+      summary: QuizAdd
+      tags:
+      - Quiz
+  /quiz/all:
+    get:
+      consumes:
+      - application/json
+      responses: {}
+      summary: QuizAll
+      tags:
+      - Quiz
+  /result/{id}:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses: {}
+      summary: ResultID
+      tags:
+      - Result
+  /result/add:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Body
+        in: body
+        name: value
+        required: true
+        schema:
+          type: string
+      responses: {}
+      summary: ResultAdd
+      tags:
+      - Result
+  /result/all:
+    get:
+      consumes:
+      - application/json
+      responses: {}
+      summary: ResultAll
+      tags:
+      - Result
 swagger: "2.0"

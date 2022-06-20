@@ -29,12 +29,12 @@ func Init() {
 
 		&shema.BlockQuiz{},
 		&shema.Quiz{},
-		&shema.Questions{},
-		&shema.Answers{},
+		// &shema.Questions{},
+		// &shema.Answers{},
 
-		&shema.Cause{},
+		// &shema.Cause{},
 
-		&shema.Result{},
+		// &shema.Result{},
 	)
 
 	// Create
