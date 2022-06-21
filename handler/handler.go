@@ -12,9 +12,9 @@ import (
 var identityKey = "id"
 
 func HandlerInit() {
-	r := gin.Default()
+	rd := gin.Default()
 
-	r.Use(cors.New(cors.Config{
+	rd.Use(cors.New(cors.Config{
 		AllowAllOrigins: true,
 		AllowMethods:    []string{"*"},
 		AllowHeaders: []string{
@@ -44,19 +44,23 @@ func HandlerInit() {
 		AllowCredentials: true,
 		MaxAge:           12 * time.Hour,
 	}))
+	tmp := AuthMiddleware()
+	r := rd.Group("api/v1")
+	r.POST("/login", tmp.LoginHandler)
 
-	// users := r.Group("/auth")
-	// {
-	// 	users.POST("/signup", signUp)
-	// }
+	//r.Use(tmp.MiddlewareFunc())
 
-	r.POST("/auth/signup", signUp)
+	// r.POST("/auth/signup", signUp)
 
 	blockquiz := r.Group("/blockquiz")
 	{
 		blockquiz.GET("/all", BlockQuizAll)
 		blockquiz.GET("/:id", BlockQuizId)
-		blockquiz.POST("/add", BlockQuizAdd)
+		blockquizadd := blockquiz.Group("/add")
+		blockquizadd.Use(tmp.MiddlewareFunc())
+		{
+			blockquizadd.POST("/title", BlockQuizAdd)
+		}
 	}
 
 	quiz := r.Group("/quiz")
@@ -94,13 +98,7 @@ func HandlerInit() {
 		result.POST("/add", ResultAdd)
 	}
 
-	// tmp := AuthMiddleware()
-
-	// users.POST("/login", tmp.LoginHandler)
-
-	// users.Use(tmp.MiddlewareFunc())
 	// users.GET("/add", AddUser)
-
-	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
-	r.Run()
+	rd.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
+	rd.Run()
 }

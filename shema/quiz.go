@@ -57,7 +57,7 @@ type (
 	// Результаты опроса
 	Result struct {
 		Id        int       `json:"id,omitempty" gorm:"primary_key"`
-		UserId    Users     `json:"user_id,omitempty" gorm:"foreignkey:User"`
+		Users     Users     `json:"user_id,omitempty" gorm:"foreignkey:Users"`
 		Cause     Cause     `json:"cause,omitempty" gorm:"foreignkey:Cause"`
 		Questions Questions `json:"questions,omitempty" gorm:"foreignkey:Questions"`
 		Count     int       `json:"count,omitempty"`

@@ -16,7 +16,7 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/ansvers/add": {
+        "/answers/add": {
             "post": {
                 "consumes": [
                     "application/json"
@@ -39,7 +39,7 @@ const docTemplate = `{
                 "responses": {}
             }
         },
-        "/ansvers/all": {
+        "/answers/all": {
             "get": {
                 "consumes": [
                     "application/json"
@@ -51,7 +51,7 @@ const docTemplate = `{
                 "responses": {}
             }
         },
-        "/ansvers/{id}": {
+        "/answers/{id}": {
             "get": {
                 "consumes": [
                     "application/json"
@@ -72,31 +72,13 @@ const docTemplate = `{
                 "responses": {}
             }
         },
-        "/auth/signup": {
+        "/blockquiz/add/title": {
             "post": {
-                "consumes": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Auth"
-                ],
-                "summary": "signUp",
-                "parameters": [
+                "security": [
                     {
-                        "description": "Body",
-                        "name": "value",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
+                        "ApiKeyAuth": []
                     }
                 ],
-                "responses": {}
-            }
-        },
-        "/blockquiz/add": {
-            "post": {
                 "consumes": [
                     "application/json"
                 ],
@@ -123,10 +105,14 @@ const docTemplate = `{
                 "consumes": [
                     "application/json"
                 ],
+                "produces": [
+                    "application/json"
+                ],
                 "tags": [
                     "BlockQuiz"
                 ],
                 "summary": "BlockQuizAll",
+                "operationId": "BlockQuiz",
                 "responses": {}
             }
         },
@@ -183,6 +169,17 @@ const docTemplate = `{
                     "Cause"
                 ],
                 "summary": "CauseAll",
+                "parameters": [
+                    {
+                        "description": "Cause info",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/shema.Cause"
+                        }
+                    }
+                ],
                 "responses": {}
             }
         },
@@ -202,6 +199,34 @@ const docTemplate = `{
                         "name": "id",
                         "in": "path",
                         "required": true
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/login": {
+            "post": {
+                "description": "login",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "SignIn",
+                "operationId": "login",
+                "parameters": [
+                    {
+                        "description": "credentials",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/shema.Login"
+                        }
                     }
                 ],
                 "responses": {}
@@ -239,6 +264,17 @@ const docTemplate = `{
                     "Questions"
                 ],
                 "summary": "QuestionsAll",
+                "parameters": [
+                    {
+                        "description": "Questions info",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/shema.Questions"
+                        }
+                    }
+                ],
                 "responses": {}
             }
         },
@@ -295,6 +331,17 @@ const docTemplate = `{
                     "Quiz"
                 ],
                 "summary": "QuizAll",
+                "parameters": [
+                    {
+                        "description": "Quiz info",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/shema.Quiz"
+                        }
+                    }
+                ],
                 "responses": {}
             }
         },
@@ -351,6 +398,17 @@ const docTemplate = `{
                     "Result"
                 ],
                 "summary": "ResultAll",
+                "parameters": [
+                    {
+                        "description": "Result info",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/shema.Result"
+                        }
+                    }
+                ],
                 "responses": {}
             }
         },
@@ -374,6 +432,213 @@ const docTemplate = `{
                 ],
                 "responses": {}
             }
+        }
+    },
+    "definitions": {
+        "shema.BlockQuiz": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "quiz": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/shema.Quiz"
+                    }
+                },
+                "title": {
+                    "type": "string"
+                }
+            }
+        },
+        "shema.Cause": {
+            "type": "object",
+            "properties": {
+                "addition": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "title": {
+                    "type": "string"
+                }
+            }
+        },
+        "shema.Group": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "permission": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/shema.Permissions"
+                    }
+                }
+            }
+        },
+        "shema.Login": {
+            "type": "object",
+            "required": [
+                "password",
+                "username"
+            ],
+            "properties": {
+                "password": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "shema.Models": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "permission": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/shema.Permissions"
+                    }
+                }
+            }
+        },
+        "shema.Permissions": {
+            "type": "object",
+            "properties": {
+                "group": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/shema.Group"
+                    }
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "mark": {
+                    "type": "string"
+                },
+                "models": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/shema.Models"
+                    }
+                }
+            }
+        },
+        "shema.Questions": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "legend": {
+                    "type": "string"
+                },
+                "quiz": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/shema.Quiz"
+                    }
+                },
+                "title": {
+                    "type": "string"
+                }
+            }
+        },
+        "shema.Quiz": {
+            "type": "object",
+            "properties": {
+                "blockquiz": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/shema.BlockQuiz"
+                    }
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "legend": {
+                    "type": "string"
+                },
+                "questions": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/shema.Questions"
+                    }
+                },
+                "topic": {
+                    "type": "string"
+                }
+            }
+        },
+        "shema.Result": {
+            "type": "object",
+            "properties": {
+                "cause": {
+                    "$ref": "#/definitions/shema.Cause"
+                },
+                "color": {
+                    "type": "string"
+                },
+                "count": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "questions": {
+                    "$ref": "#/definitions/shema.Questions"
+                },
+                "result": {
+                    "type": "integer"
+                },
+                "user_id": {
+                    "$ref": "#/definitions/shema.Users"
+                }
+            }
+        },
+        "shema.Users": {
+            "type": "object",
+            "properties": {
+                "group": {
+                    "$ref": "#/definitions/shema.Group"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        }
+    },
+    "securityDefinitions": {
+        "ApiKeyAuth": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
         }
     }
 }`

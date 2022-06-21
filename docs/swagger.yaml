@@ -1,7 +1,137 @@
+definitions:
+  shema.BlockQuiz:
+    properties:
+      id:
+        type: integer
+      quiz:
+        items:
+          $ref: '#/definitions/shema.Quiz'
+        type: array
+      title:
+        type: string
+    type: object
+  shema.Cause:
+    properties:
+      addition:
+        type: string
+      description:
+        type: string
+      id:
+        type: integer
+      title:
+        type: string
+    type: object
+  shema.Group:
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+      permission:
+        items:
+          $ref: '#/definitions/shema.Permissions'
+        type: array
+    type: object
+  shema.Login:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    required:
+    - password
+    - username
+    type: object
+  shema.Models:
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+      permission:
+        items:
+          $ref: '#/definitions/shema.Permissions'
+        type: array
+    type: object
+  shema.Permissions:
+    properties:
+      group:
+        items:
+          $ref: '#/definitions/shema.Group'
+        type: array
+      id:
+        type: integer
+      mark:
+        type: string
+      models:
+        items:
+          $ref: '#/definitions/shema.Models'
+        type: array
+    type: object
+  shema.Questions:
+    properties:
+      id:
+        type: integer
+      legend:
+        type: string
+      quiz:
+        items:
+          $ref: '#/definitions/shema.Quiz'
+        type: array
+      title:
+        type: string
+    type: object
+  shema.Quiz:
+    properties:
+      blockquiz:
+        items:
+          $ref: '#/definitions/shema.BlockQuiz'
+        type: array
+      id:
+        type: integer
+      legend:
+        type: string
+      questions:
+        items:
+          $ref: '#/definitions/shema.Questions'
+        type: array
+      topic:
+        type: string
+    type: object
+  shema.Result:
+    properties:
+      cause:
+        $ref: '#/definitions/shema.Cause'
+      color:
+        type: string
+      count:
+        type: integer
+      id:
+        type: integer
+      questions:
+        $ref: '#/definitions/shema.Questions'
+      result:
+        type: integer
+      user_id:
+        $ref: '#/definitions/shema.Users'
+    type: object
+  shema.Users:
+    properties:
+      group:
+        $ref: '#/definitions/shema.Group'
+      id:
+        type: integer
+      name:
+        type: string
+      password:
+        type: string
+      username:
+        type: string
+    type: object
 info:
   contact: {}
 paths:
-  /ansvers/{id}:
+  /answers/{id}:
     get:
       consumes:
       - application/json
@@ -15,7 +145,7 @@ paths:
       summary: AnswersID
       tags:
       - Answers
-  /ansvers/add:
+  /answers/add:
     post:
       consumes:
       - application/json
@@ -30,7 +160,7 @@ paths:
       summary: AnswersAdd
       tags:
       - Answers
-  /ansvers/all:
+  /answers/all:
     get:
       consumes:
       - application/json
@@ -38,21 +168,6 @@ paths:
       summary: AnswersAll
       tags:
       - Answers
-  /auth/signup:
-    post:
-      consumes:
-      - application/json
-      parameters:
-      - description: Body
-        in: body
-        name: value
-        required: true
-        schema:
-          type: string
-      responses: {}
-      summary: signUp
-      tags:
-      - Auth
   /blockquiz/{id}:
     get:
       consumes:
@@ -67,7 +182,7 @@ paths:
       summary: BlockQuizID
       tags:
       - BlockQuiz
-  /blockquiz/add:
+  /blockquiz/add/title:
     post:
       consumes:
       - application/json
@@ -79,12 +194,17 @@ paths:
         schema:
           type: string
       responses: {}
+      security:
+      - ApiKeyAuth: []
       summary: BlockQuizAdd
       tags:
       - BlockQuiz
   /blockquiz/all:
     get:
       consumes:
+      - application/json
+      operationId: BlockQuiz
+      produces:
       - application/json
       responses: {}
       summary: BlockQuizAll
@@ -123,10 +243,36 @@ paths:
     get:
       consumes:
       - application/json
+      parameters:
+      - description: Cause info
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/shema.Cause'
       responses: {}
       summary: CauseAll
       tags:
       - Cause
+  /login:
+    post:
+      consumes:
+      - application/json
+      description: login
+      operationId: login
+      parameters:
+      - description: credentials
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/shema.Login'
+      produces:
+      - application/json
+      responses: {}
+      summary: SignIn
+      tags:
+      - Auth
   /questions/{id}:
     get:
       consumes:
@@ -160,6 +306,13 @@ paths:
     get:
       consumes:
       - application/json
+      parameters:
+      - description: Questions info
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/shema.Questions'
       responses: {}
       summary: QuestionsAll
       tags:
@@ -197,6 +350,13 @@ paths:
     get:
       consumes:
       - application/json
+      parameters:
+      - description: Quiz info
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/shema.Quiz'
       responses: {}
       summary: QuizAll
       tags:
@@ -234,8 +394,20 @@ paths:
     get:
       consumes:
       - application/json
+      parameters:
+      - description: Result info
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/shema.Result'
       responses: {}
       summary: ResultAll
       tags:
       - Result
+securityDefinitions:
+  ApiKeyAuth:
+    in: header
+    name: Authorization
+    type: apiKey
 swagger: "2.0"

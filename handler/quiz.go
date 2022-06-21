@@ -10,10 +10,12 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-// @Summary BlockQuizAll
-// @Tags    BlockQuiz
-// @Accept  json
-//@Router  /blockquiz/all [get]
+// @Summary  BlockQuizAll
+// @Tags     BlockQuiz
+// @ID 		 BlockQuiz
+// @Accept   json
+// @Produce  json
+// @Router   /blockquiz/all [get]
 func BlockQuizAll(c *gin.Context) {
 	var allblock []shema.BlockQuiz
 
@@ -26,7 +28,7 @@ func BlockQuizAll(c *gin.Context) {
 // @Tags    BlockQuiz
 // @Accept  json
 // @Param   id     path   int   true   "id"
-//@Router  /blockquiz/{id} [get]
+// @Router  /blockquiz/{id} [get]
 func BlockQuizId(c *gin.Context) {
 	var block []shema.BlockQuiz
 
@@ -42,10 +44,11 @@ func BlockQuizId(c *gin.Context) {
 }
 
 // @Summary BlockQuizAdd
+// @Security ApiKeyAuth
 // @Tags    BlockQuiz
 // @Accept  json
 // @Param   value   body   string   true   "Body"
-// @Router  /blockquiz/add [post]
+// @Router  /blockquiz/add/title [post]
 func BlockQuizAdd(c *gin.Context) {
 	var cnt shema.BlockQuiz
 
@@ -64,7 +67,8 @@ func BlockQuizAdd(c *gin.Context) {
 // @Summary QuizAll
 // @Tags    Quiz
 // @Accept  json
-//@Router  /quiz/all [get]
+// @Param   input body shema.Quiz true "Quiz info"
+//@Router   /quiz/all [get]
 func QuizAll(c *gin.Context) {
 	var allquiz []shema.Quiz
 
@@ -77,7 +81,7 @@ func QuizAll(c *gin.Context) {
 // @Tags    Quiz
 // @Accept  json
 // @Param   id     path   int   true   "id"
-//@Router  /quiz/{id} [get]
+//@Router   /quiz/{id} [get]
 func QuizId(c *gin.Context) {
 	var quiz []shema.Quiz
 
@@ -109,7 +113,8 @@ func QuizAdd(c *gin.Context) {
 // @Summary QuestionsAll
 // @Tags    Questions
 // @Accept  json
-//@Router  /questions/all [get]
+// @Param   input body shema.Questions true "Questions info"
+//@Router   /questions/all [get]
 func QuestionsAll(c *gin.Context) {
 	var allquestions []shema.Questions
 
@@ -122,7 +127,7 @@ func QuestionsAll(c *gin.Context) {
 // @Tags    Questions
 // @Accept  json
 // @Param   id     path   int   true   "id"
-//@Router  /questions/{id} [get]
+//@Router   /questions/{id} [get]
 func QuestionsId(c *gin.Context) {
 	var questions []shema.Questions
 
@@ -154,7 +159,7 @@ func QuestionsAdd(c *gin.Context) {
 // @Summary AnswersAll
 // @Tags    Answers
 // @Accept  json
-//@Router  /answers/all [get]
+//@Router   /answers/all [get]
 func AnswersAll(c *gin.Context) {
 	var allanswers []shema.Answers
 
@@ -167,7 +172,7 @@ func AnswersAll(c *gin.Context) {
 // @Tags    Answers
 // @Accept  json
 // @Param   id     path   int   true   "id"
-//@Router  /answers/{id} [get]
+//@Router   /answers/{id} [get]
 func AnswersId(c *gin.Context) {
 	var answers []shema.Answers
 
@@ -199,7 +204,8 @@ func AnswersAdd(c *gin.Context) {
 // @Summary CauseAll
 // @Tags    Cause
 // @Accept  json
-//@Router  /cause/all [get]
+// @Param   input body shema.Cause true "Cause info"
+//@Router   /cause/all [get]
 func CauseAll(c *gin.Context) {
 	var allcause []shema.Cause
 
@@ -212,7 +218,7 @@ func CauseAll(c *gin.Context) {
 // @Tags    Cause
 // @Accept  json
 // @Param   id     path   int   true   "id"
-//@Router  /cause/{id} [get]
+//@Router   /cause/{id} [get]
 func CauseId(c *gin.Context) {
 	var cause []shema.Cause
 
@@ -244,7 +250,8 @@ func CauseAdd(c *gin.Context) {
 // @Summary ResultAll
 // @Tags    Result
 // @Accept  json
-//@Router  /result/all [get]
+// @Param   input body shema.Result true "Result info"
+//@Router   /result/all [get]
 func ResultAll(c *gin.Context) {
 	var allresult []shema.Result
 
@@ -257,7 +264,7 @@ func ResultAll(c *gin.Context) {
 // @Tags    Result
 // @Accept  json
 // @Param   id     path   int   true   "id"
-//@Router  /result/{id} [get]
+//@Router   /result/{id} [get]
 func ResultId(c *gin.Context) {
 	var result []shema.Result
 

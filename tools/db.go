@@ -25,16 +25,19 @@ func Init() {
 
 	db.AutoMigrate(
 		&shema.Users{},
-		&shema.UserData{},
+		&shema.Group{},
+		&shema.Permissions{},
+		&shema.Models{},
+		// &shema.UserData{},
 
 		&shema.BlockQuiz{},
 		&shema.Quiz{},
-		// &shema.Questions{},
-		// &shema.Answers{},
+		&shema.Questions{},
+		&shema.Answers{},
 
-		// &shema.Cause{},
+		&shema.Cause{},
 
-		// &shema.Result{},
+		&shema.Result{},
 	)
 
 	// Create

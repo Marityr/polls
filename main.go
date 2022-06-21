@@ -12,13 +12,16 @@ func SwaggerInit() {
 	docs.SwaggerInfo.Description = "Polls swagger api examples"
 	docs.SwaggerInfo.Version = "1.0"
 	docs.SwaggerInfo.Host = "localhost:8080"
-	docs.SwaggerInfo.BasePath = "/"
+	docs.SwaggerInfo.BasePath = "/api/v1"
 	docs.SwaggerInfo.Schemes = []string{"http"}
 }
 
+// @securityDefinitions.apikey ApiKeyAuth
+// @in   header
+// @name Authorization
+
 func main() {
 	SwaggerInit()
-
 	tools.Init()
 
 	handler.HandlerInit()
