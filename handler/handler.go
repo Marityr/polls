@@ -46,59 +46,85 @@ func HandlerInit() {
 	}))
 	tmp := AuthMiddleware()
 	r := rd.Group("api/v1")
+	r.GET("/signup", CreateUser)
 	r.POST("/login", tmp.LoginHandler)
 
 	//r.Use(tmp.MiddlewareFunc())
 
-	// r.POST("/auth/signup", signUp)
-
 	blockquiz := r.Group("/blockquiz")
 	{
-		blockquiz.GET("/all", BlockQuizAll)
-		blockquiz.GET("/:id", BlockQuizId)
-		blockquizadd := blockquiz.Group("/add")
-		blockquizadd.Use(tmp.MiddlewareFunc())
+		blockquiz.GET("/", BlockQuiz)
+		blockquizOption := blockquiz.Group("")
+		blockquizOption.Use(tmp.MiddlewareFunc())
 		{
-			blockquizadd.POST("/title", BlockQuizAdd)
+			blockquizOption.POST("/add", AddBlockQuiz)
+			blockquizOption.PUT("/put", UpdateBlockQuiz)
+			blockquizOption.DELETE("/delete", DeleteBlockQuiz)
 		}
 	}
 
 	quiz := r.Group("/quiz")
 	{
-		quiz.GET("/all", QuizAll)
-		quiz.GET("/:id", QuizId)
-		quiz.POST("/add", QuizAdd)
+		quiz.GET("/", Quiz)
+		quizOption := quiz.Group("")
+		quizOption.Use(tmp.MiddlewareFunc())
+		{
+			quizOption.POST("/add", AddQuiz)
+			quizOption.PUT("/put", UpdateQuiz)
+			quizOption.DELETE("/delete", DeleteQuiz)
+		}
 	}
 
 	questions := r.Group("/questions")
 	{
-		questions.GET("/all", QuestionsAll)
-		questions.GET("/:id", QuestionsId)
-		questions.POST("/add", QuestionsAdd)
+		questions.GET("/", Questions)
+		questionsOption := questions.Group("")
+		questionsOption.Use(tmp.MiddlewareFunc())
+		{
+			questionsOption.POST("/add", AddQuestions)
+			questionsOption.PUT("/put", UpdateQuestions)
+			questionsOption.DELETE("/delete", DeleteQuestions)
+		}
 	}
 
 	answers := r.Group("/answers")
 	{
-		answers.GET("/all", AnswersAll)
-		answers.GET("/:id", AnswersId)
-		answers.POST("/add", AnswersAdd)
+		answers.GET("/", Answers)
+		answersOption := answers.Group("")
+		answersOption.Use(tmp.MiddlewareFunc())
+		{
+			answersOption.POST("/add", AddAnswers)
+			answersOption.PUT("/put", UpdateAnswers)
+			answersOption.DELETE("/delete", DeleteAnswers)
+		}
 	}
 
 	cause := r.Group("/cause")
 	{
-		cause.GET("/all", CauseAll)
-		cause.GET("/:id", CauseId)
-		cause.POST("/add", CauseAdd)
+		cause.GET("/", Cause)
+		causeOption := cause.Group("")
+		causeOption.Use(tmp.MiddlewareFunc())
+		{
+			causeOption.POST("/add", AddCause)
+			causeOption.PUT("/put", UpdateCause)
+			causeOption.DELETE("/delete", DeleteCause)
+		}
 	}
 
 	result := r.Group("/result")
 	{
-		result.GET("/all", ResultAll)
-		result.GET("/:id", ResultId)
-		result.POST("/add", ResultAdd)
+		result.GET("/", Result)
+		resultOption := result.Group("")
+		resultOption.Use(tmp.MiddlewareFunc())
+		{
+			resultOption.POST("/add", AddResult)
+			resultOption.PUT("/put", UpdateResult)
+			resultOption.DELETE("/delete", DeleteResult)
+		}
 	}
 
-	// users.GET("/add", AddUser)
 	rd.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 	rd.Run()
 }
+
+//TODO отправка файлов на сервер

@@ -15,8 +15,9 @@ package shema
 type (
 	// Блок опроса
 	BlockQuiz struct {
-		Id    int    `json:"id,omitempty" gorm:"primary_key"`
-		Title string `json:"title,omitempty"`
+		Id int `json:"id,omitempty" gorm:"primary_key"`
+		//TODO валидация полей структуры
+		Title string `json:"title,omitempty" binding:"required"`
 		Quiz  []Quiz `json:"quiz,omitempty" gorm:"many2many:block_quiz;"`
 	}
 
@@ -31,10 +32,11 @@ type (
 
 	// Вопросы
 	Questions struct {
-		Id     int    `json:"id,omitempty" gorm:"primary_key"`
-		Title  string `json:"title,omitempty"`
-		Quiz   []Quiz `json:"quiz,omitempty" gorm:"many2many:questions_quiz;"`
-		Legend string `json:"legend,omitempty"`
+		Id      int       `json:"id,omitempty" gorm:"primary_key"`
+		Title   string    `json:"title,omitempty"`
+		Quiz    []Quiz    `json:"quiz,omitempty" gorm:"many2many:questions_quiz;"`
+		Legend  string    `json:"legend,omitempty"`
+		Answers []Answers `json:"answers,omitempty" gorm:"many2many:questions_answer"`
 	}
 
 	// Варианты ответов
@@ -57,7 +59,7 @@ type (
 	// Результаты опроса
 	Result struct {
 		Id        int       `json:"id,omitempty" gorm:"primary_key"`
-		Users     Users     `json:"user_id,omitempty" gorm:"foreignkey:Users"`
+		Users     User      `json:"user_id,omitempty" gorm:"foreignkey:Users"`
 		Cause     Cause     `json:"cause,omitempty" gorm:"foreignkey:Cause"`
 		Questions Questions `json:"questions,omitempty" gorm:"foreignkey:Questions"`
 		Count     int       `json:"count,omitempty"`

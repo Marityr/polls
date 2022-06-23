@@ -1,36 +1,13 @@
 definitions:
-  shema.BlockQuiz:
+  handler.signup:
     properties:
-      id:
-        type: integer
-      quiz:
-        items:
-          $ref: '#/definitions/shema.Quiz'
-        type: array
-      title:
+      password:
         type: string
-    type: object
-  shema.Cause:
-    properties:
-      addition:
+      username:
         type: string
-      description:
-        type: string
-      id:
-        type: integer
-      title:
-        type: string
-    type: object
-  shema.Group:
-    properties:
-      id:
-        type: integer
-      name:
-        type: string
-      permission:
-        items:
-          $ref: '#/definitions/shema.Permissions'
-        type: array
+    required:
+    - password
+    - username
     type: object
   shema.Login:
     properties:
@@ -42,107 +19,23 @@ definitions:
     - password
     - username
     type: object
-  shema.Models:
-    properties:
-      id:
-        type: integer
-      name:
-        type: string
-      permission:
-        items:
-          $ref: '#/definitions/shema.Permissions'
-        type: array
-    type: object
-  shema.Permissions:
-    properties:
-      group:
-        items:
-          $ref: '#/definitions/shema.Group'
-        type: array
-      id:
-        type: integer
-      mark:
-        type: string
-      models:
-        items:
-          $ref: '#/definitions/shema.Models'
-        type: array
-    type: object
-  shema.Questions:
-    properties:
-      id:
-        type: integer
-      legend:
-        type: string
-      quiz:
-        items:
-          $ref: '#/definitions/shema.Quiz'
-        type: array
-      title:
-        type: string
-    type: object
-  shema.Quiz:
-    properties:
-      blockquiz:
-        items:
-          $ref: '#/definitions/shema.BlockQuiz'
-        type: array
-      id:
-        type: integer
-      legend:
-        type: string
-      questions:
-        items:
-          $ref: '#/definitions/shema.Questions'
-        type: array
-      topic:
-        type: string
-    type: object
-  shema.Result:
-    properties:
-      cause:
-        $ref: '#/definitions/shema.Cause'
-      color:
-        type: string
-      count:
-        type: integer
-      id:
-        type: integer
-      questions:
-        $ref: '#/definitions/shema.Questions'
-      result:
-        type: integer
-      user_id:
-        $ref: '#/definitions/shema.Users'
-    type: object
-  shema.Users:
-    properties:
-      group:
-        $ref: '#/definitions/shema.Group'
-      id:
-        type: integer
-      name:
-        type: string
-      password:
-        type: string
-      username:
-        type: string
-    type: object
 info:
   contact: {}
 paths:
-  /answers/{id}:
+  /answers/:
     get:
       consumes:
       - application/json
+      description: Вопросы
       parameters:
-      - description: id
-        in: path
+      - description: ID
+        in: query
         name: id
-        required: true
-        type: integer
+        type: string
+      produces:
+      - application/json
       responses: {}
-      summary: AnswersID
+      summary: Answers
       tags:
       - Answers
   /answers/add:
@@ -157,32 +50,61 @@ paths:
         schema:
           type: string
       responses: {}
-      summary: AnswersAdd
+      security:
+      - ApiKeyAuth: []
+      summary: AddAnswers
       tags:
       - Answers
-  /answers/all:
-    get:
-      consumes:
-      - application/json
-      responses: {}
-      summary: AnswersAll
-      tags:
-      - Answers
-  /blockquiz/{id}:
-    get:
+  /answers/delete:
+    delete:
       consumes:
       - application/json
       parameters:
-      - description: id
-        in: path
+      - description: ID
+        in: query
         name: id
         required: true
-        type: integer
+        type: string
       responses: {}
-      summary: BlockQuizID
+      security:
+      - ApiKeyAuth: []
+      summary: AnswersDelete
+      tags:
+      - Answers
+  /answers/put:
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: Body
+        in: body
+        name: value
+        required: true
+        schema:
+          type: string
+      responses: {}
+      security:
+      - ApiKeyAuth: []
+      summary: UpdateAnswers
+      tags:
+      - Answers
+  /blockquiz/:
+    get:
+      consumes:
+      - application/json
+      description: Блоки опросов
+      parameters:
+      - description: ID
+        in: query
+        name: id
+        type: string
+      produces:
+      - application/json
+      responses: {}
+      summary: BlockQuiz
       tags:
       - BlockQuiz
-  /blockquiz/add/title:
+  /blockquiz/add:
     post:
       consumes:
       - application/json
@@ -196,32 +118,56 @@ paths:
       responses: {}
       security:
       - ApiKeyAuth: []
-      summary: BlockQuizAdd
+      summary: AddBlockQuiz
       tags:
       - BlockQuiz
-  /blockquiz/all:
-    get:
-      consumes:
-      - application/json
-      operationId: BlockQuiz
-      produces:
-      - application/json
-      responses: {}
-      summary: BlockQuizAll
-      tags:
-      - BlockQuiz
-  /cause/{id}:
-    get:
+  /blockquiz/delete:
+    delete:
       consumes:
       - application/json
       parameters:
-      - description: id
-        in: path
+      - description: ID
+        in: query
         name: id
         required: true
-        type: integer
+        type: string
       responses: {}
-      summary: CauseID
+      security:
+      - ApiKeyAuth: []
+      summary: BlockQuizDelete
+      tags:
+      - BlockQuiz
+  /blockquiz/put:
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: Body
+        in: body
+        name: value
+        required: true
+        schema:
+          type: string
+      responses: {}
+      security:
+      - ApiKeyAuth: []
+      summary: UpdateBlockQuiz
+      tags:
+      - BlockQuiz
+  /cause/:
+    get:
+      consumes:
+      - application/json
+      description: Вопросы
+      parameters:
+      - description: ID
+        in: query
+        name: id
+        type: string
+      produces:
+      - application/json
+      responses: {}
+      summary: Cause
       tags:
       - Cause
   /cause/add:
@@ -236,22 +182,42 @@ paths:
         schema:
           type: string
       responses: {}
-      summary: CauseAdd
+      security:
+      - ApiKeyAuth: []
+      summary: AddCause
       tags:
       - Cause
-  /cause/all:
-    get:
+  /cause/delete:
+    delete:
       consumes:
       - application/json
       parameters:
-      - description: Cause info
+      - description: ID
+        in: query
+        name: id
+        required: true
+        type: string
+      responses: {}
+      security:
+      - ApiKeyAuth: []
+      summary: CauseDelete
+      tags:
+      - Cause
+  /cause/put:
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: Body
         in: body
-        name: input
+        name: value
         required: true
         schema:
-          $ref: '#/definitions/shema.Cause'
+          type: string
       responses: {}
-      summary: CauseAll
+      security:
+      - ApiKeyAuth: []
+      summary: UpdateCause
       tags:
       - Cause
   /login:
@@ -259,7 +225,6 @@ paths:
       consumes:
       - application/json
       description: login
-      operationId: login
       parameters:
       - description: credentials
         in: body
@@ -273,18 +238,20 @@ paths:
       summary: SignIn
       tags:
       - Auth
-  /questions/{id}:
+  /questions/:
     get:
       consumes:
       - application/json
+      description: Вопросы
       parameters:
-      - description: id
-        in: path
+      - description: ID
+        in: query
         name: id
-        required: true
-        type: integer
+        type: string
+      produces:
+      - application/json
       responses: {}
-      summary: QuestionsID
+      summary: Questions
       tags:
       - Questions
   /questions/add:
@@ -299,36 +266,58 @@ paths:
         schema:
           type: string
       responses: {}
-      summary: QuestionsAdd
+      security:
+      - ApiKeyAuth: []
+      summary: AddQuestions
       tags:
       - Questions
-  /questions/all:
-    get:
+  /questions/delete:
+    delete:
       consumes:
       - application/json
       parameters:
-      - description: Questions info
-        in: body
-        name: input
-        required: true
-        schema:
-          $ref: '#/definitions/shema.Questions'
-      responses: {}
-      summary: QuestionsAll
-      tags:
-      - Questions
-  /quiz/{id}:
-    get:
-      consumes:
-      - application/json
-      parameters:
-      - description: id
-        in: path
+      - description: ID
+        in: query
         name: id
         required: true
-        type: integer
+        type: string
       responses: {}
-      summary: QuizID
+      security:
+      - ApiKeyAuth: []
+      summary: QuestionsDelete
+      tags:
+      - Questions
+  /questions/put:
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: Body
+        in: body
+        name: value
+        required: true
+        schema:
+          type: string
+      responses: {}
+      security:
+      - ApiKeyAuth: []
+      summary: UpdateQuestions
+      tags:
+      - Questions
+  /quiz/:
+    get:
+      consumes:
+      - application/json
+      description: Опрос
+      parameters:
+      - description: ID
+        in: query
+        name: id
+        type: string
+      produces:
+      - application/json
+      responses: {}
+      summary: Quiz
       tags:
       - Quiz
   /quiz/add:
@@ -343,36 +332,58 @@ paths:
         schema:
           type: string
       responses: {}
-      summary: QuizAdd
+      security:
+      - ApiKeyAuth: []
+      summary: AddQuiz
       tags:
       - Quiz
-  /quiz/all:
-    get:
+  /quiz/delete:
+    delete:
       consumes:
       - application/json
       parameters:
-      - description: Quiz info
-        in: body
-        name: input
-        required: true
-        schema:
-          $ref: '#/definitions/shema.Quiz'
-      responses: {}
-      summary: QuizAll
-      tags:
-      - Quiz
-  /result/{id}:
-    get:
-      consumes:
-      - application/json
-      parameters:
-      - description: id
-        in: path
+      - description: ID
+        in: query
         name: id
         required: true
-        type: integer
+        type: string
       responses: {}
-      summary: ResultID
+      security:
+      - ApiKeyAuth: []
+      summary: QuizDelete
+      tags:
+      - Quiz
+  /quiz/put:
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: Body
+        in: body
+        name: value
+        required: true
+        schema:
+          type: string
+      responses: {}
+      security:
+      - ApiKeyAuth: []
+      summary: UpdateQuiz
+      tags:
+      - Quiz
+  /result/:
+    get:
+      consumes:
+      - application/json
+      description: Вопросы
+      parameters:
+      - description: ID
+        in: query
+        name: id
+        type: string
+      produces:
+      - application/json
+      responses: {}
+      summary: Result
       tags:
       - Result
   /result/add:
@@ -387,24 +398,62 @@ paths:
         schema:
           type: string
       responses: {}
-      summary: ResultAdd
+      security:
+      - ApiKeyAuth: []
+      summary: AddResult
       tags:
       - Result
-  /result/all:
-    get:
+  /result/delete:
+    delete:
       consumes:
       - application/json
       parameters:
-      - description: Result info
+      - description: ID
+        in: query
+        name: id
+        required: true
+        type: string
+      responses: {}
+      security:
+      - ApiKeyAuth: []
+      summary: ResultDelete
+      tags:
+      - Result
+  /result/put:
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: Body
+        in: body
+        name: value
+        required: true
+        schema:
+          type: string
+      responses: {}
+      security:
+      - ApiKeyAuth: []
+      summary: UpdateResult
+      tags:
+      - Result
+  /signup:
+    get:
+      consumes:
+      - application/json
+      description: SignUp
+      parameters:
+      - description: credentials
         in: body
         name: input
         required: true
         schema:
-          $ref: '#/definitions/shema.Result'
+          $ref: '#/definitions/handler.signup'
+      produces:
+      - application/json
       responses: {}
-      summary: ResultAll
+      summary: SignUp
       tags:
-      - Result
+      - Auth
 securityDefinitions:
   ApiKeyAuth:
     in: header

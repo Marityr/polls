@@ -1,294 +1,721 @@
 package handler
 
 import (
-	"log"
-	"strconv"
+	"net/http"
 
 	"github.com/Marityr/polls.git/shema"
 	"github.com/Marityr/polls.git/tools"
 	"github.com/gin-gonic/gin"
-	"github.com/sirupsen/logrus"
 )
 
-// @Summary  BlockQuizAll
+//TODO добавить обработку ошибок
+//TODO переделать эндпоинты с queryparam
+//WARN переделать эндпоинты с queryparam
+type response struct {
+	Errors []string
+	Data   interface{}
+}
+
+// @Summary  BlockQuiz
+// @Description  Блоки опросов
 // @Tags     BlockQuiz
-// @ID 		 BlockQuiz
 // @Accept   json
 // @Produce  json
-// @Router   /blockquiz/all [get]
-func BlockQuizAll(c *gin.Context) {
-	var allblock []shema.BlockQuiz
+// @Param    id  query  string  false  "ID"
+// @Router   /blockquiz/ [get]
+func BlockQuiz(c *gin.Context) {
+	var cnt []shema.BlockQuiz
+	var r response
 
-	tools.DB.Preload("Quiz").Find(&allblock)
-
-	c.JSON(200, &allblock)
-}
-
-// @Summary BlockQuizID
-// @Tags    BlockQuiz
-// @Accept  json
-// @Param   id     path   int   true   "id"
-// @Router  /blockquiz/{id} [get]
-func BlockQuizId(c *gin.Context) {
-	var block []shema.BlockQuiz
-
-	id, err := strconv.Atoi(c.Param("id"))
-	if err != nil {
-		logrus.Info(err)
-		return
+	q := tools.DB
+	id := c.Copy().DefaultQuery("id", "")
+	if id != "" {
+		q = q.Where("id = ?", id)
 	}
 
-	tools.DB.Where(shema.BlockQuiz{Id: id}).Find(&block)
+	dbErr := q.
+		Preload("Quiz").
+		Find(&cnt).Error
 
-	c.JSON(200, &block)
+	if dbErr != nil {
+		r.Errors = append(r.Errors, dbErr.Error())
+		c.JSON(http.StatusBadRequest, &r)
+	} else {
+		r.Data = cnt
+		c.JSON(http.StatusOK, &r)
+	}
 }
 
-// @Summary BlockQuizAdd
+// @Summary AddBlockQuiz
 // @Security ApiKeyAuth
 // @Tags    BlockQuiz
 // @Accept  json
 // @Param   value   body   string   true   "Body"
-// @Router  /blockquiz/add/title [post]
-func BlockQuizAdd(c *gin.Context) {
+// @Router  /blockquiz/add [post]
+func AddBlockQuiz(c *gin.Context) {
 	var cnt shema.BlockQuiz
+	var r response
 
-	c.BindJSON(&cnt)
+	jsonErr := c.BindJSON(&cnt)
 
-	r := tools.DB.Create(&cnt) //cnt.Save(tools.DB)
-	if r.RowsAffected == 0 {
-		log.Println("Not Create")
-		c.JSON(400, cnt)
+	if jsonErr != nil {
+		r.Errors = append(r.Errors, jsonErr.Error())
+		c.JSON(http.StatusBadRequest, &r)
 		return
 	}
 
-	c.JSON(200, cnt)
+	dbErr := tools.DB.Create(&cnt).Error
+	if dbErr != nil {
+		r.Errors = append(r.Errors, dbErr.Error())
+		c.JSON(http.StatusBadRequest, &r)
+	} else {
+		r.Data = cnt
+		c.JSON(http.StatusOK, &r)
+	}
+
 }
 
-// @Summary QuizAll
-// @Tags    Quiz
+// @Summary UpdateBlockQuiz
+// @Security ApiKeyAuth
+// @Tags    BlockQuiz
 // @Accept  json
-// @Param   input body shema.Quiz true "Quiz info"
-//@Router   /quiz/all [get]
-func QuizAll(c *gin.Context) {
-	var allquiz []shema.Quiz
+// @Param   value   body   string   true   "Body"
+// @Router  /blockquiz/put [put]
+func UpdateBlockQuiz(c *gin.Context) {
+	var cnt shema.BlockQuiz
+	var r response
 
-	tools.DB.Find(&allquiz)
+	jsonErr := c.BindJSON(&cnt)
 
-	c.JSON(200, &allquiz)
-}
-
-// @Summary QuizID
-// @Tags    Quiz
-// @Accept  json
-// @Param   id     path   int   true   "id"
-//@Router   /quiz/{id} [get]
-func QuizId(c *gin.Context) {
-	var quiz []shema.Quiz
-
-	id, err := strconv.Atoi(c.Param("id"))
-	if err != nil {
-		logrus.Info(err)
+	if jsonErr != nil {
+		r.Errors = append(r.Errors, jsonErr.Error())
+		c.JSON(http.StatusBadRequest, &r)
 		return
 	}
 
-	tools.DB.Where(shema.BlockQuiz{Id: id}).Find(&quiz)
+	dbErr := tools.DB.
+		Save(&cnt).
+		Error
+	if dbErr != nil {
+		r.Errors = append(r.Errors, dbErr.Error())
+		c.JSON(http.StatusBadRequest, &r)
+	} else {
+		r.Data = cnt
+		c.JSON(http.StatusOK, &r)
+	}
 
-	c.JSON(200, &quiz)
 }
 
-// @Summary QuizAdd
+// @Summary  BlockQuizDelete
+// @Security ApiKeyAuth
+// @Tags     BlockQuiz
+// @Accept   json
+// @Param    id  query  string  true  "ID"
+// @Router   /blockquiz/delete [Delete]
+func DeleteBlockQuiz(c *gin.Context) {
+	var cnt []shema.BlockQuiz
+	var r response
+
+	q := tools.DB
+	id := c.Copy().DefaultQuery("id", "")
+	if id != "" {
+		q = q.Where("id = ?", id)
+	}
+
+	dbErr := q.Delete(&cnt).Error
+
+	if dbErr != nil {
+		r.Errors = append(r.Errors, dbErr.Error())
+		c.JSON(http.StatusBadRequest, &r)
+	} else {
+		r.Data = cnt
+		c.JSON(http.StatusOK, &r)
+	}
+
+}
+
+// @Summary  Quiz
+// @Description  Опрос
+// @Tags     Quiz
+// @Accept   json
+// @Produce  json
+// @Param    id  query  string  false  "ID"
+// @Router   /quiz/ [get]
+func Quiz(c *gin.Context) {
+	var cnt []shema.Quiz
+	var r response
+
+	q := tools.DB
+	id := c.Copy().DefaultQuery("id", "")
+	if id != "" {
+		q = q.Where("id = ?", id)
+	}
+
+	dbErr := q.
+		Preload("Questions").
+		Find(&cnt).Error
+
+	if dbErr != nil {
+		r.Errors = append(r.Errors, dbErr.Error())
+		c.JSON(http.StatusBadRequest, &r)
+	} else {
+		r.Data = cnt
+		c.JSON(http.StatusOK, &r)
+	}
+}
+
+// @Summary AddQuiz
+// @Security ApiKeyAuth
 // @Tags    Quiz
 // @Accept  json
 // @Param   value   body   string   true   "Body"
 // @Router  /quiz/add [post]
-func QuizAdd(c *gin.Context) {
+func AddQuiz(c *gin.Context) {
 	var cnt shema.Quiz
+	var r response
 
-	c.BindJSON(&cnt)
-	tools.DB.Create(&cnt)
+	jsonErr := c.BindJSON(&cnt)
 
-	c.JSON(200, cnt)
-}
-
-// @Summary QuestionsAll
-// @Tags    Questions
-// @Accept  json
-// @Param   input body shema.Questions true "Questions info"
-//@Router   /questions/all [get]
-func QuestionsAll(c *gin.Context) {
-	var allquestions []shema.Questions
-
-	tools.DB.Find(&allquestions)
-
-	c.JSON(200, &allquestions)
-}
-
-// @Summary QuestionsID
-// @Tags    Questions
-// @Accept  json
-// @Param   id     path   int   true   "id"
-//@Router   /questions/{id} [get]
-func QuestionsId(c *gin.Context) {
-	var questions []shema.Questions
-
-	id, err := strconv.Atoi(c.Param("id"))
-	if err != nil {
-		logrus.Info(err)
+	if jsonErr != nil {
+		r.Errors = append(r.Errors, jsonErr.Error())
+		c.JSON(http.StatusBadRequest, &r)
 		return
 	}
 
-	tools.DB.Where(shema.Questions{Id: id}).Find(&questions)
+	dbErr := tools.DB.Create(&cnt).Error
+	if dbErr != nil {
+		r.Errors = append(r.Errors, dbErr.Error())
+		c.JSON(http.StatusBadRequest, &r)
+	} else {
+		r.Data = cnt
+		c.JSON(http.StatusOK, &r)
+	}
 
-	c.JSON(200, &questions)
 }
 
-// @Summary QuestionsAdd
+// @Summary UpdateQuiz
+// @Security ApiKeyAuth
+// @Tags    Quiz
+// @Accept  json
+// @Param   value   body   string   true   "Body"
+// @Router  /quiz/put [put]
+func UpdateQuiz(c *gin.Context) {
+	var cnt shema.Quiz
+	var r response
+
+	jsonErr := c.BindJSON(&cnt)
+
+	if jsonErr != nil {
+		r.Errors = append(r.Errors, jsonErr.Error())
+		c.JSON(http.StatusBadRequest, &r)
+		return
+	}
+
+	dbErr := tools.DB.
+		Save(&cnt).
+		Error
+	if dbErr != nil {
+		r.Errors = append(r.Errors, dbErr.Error())
+		c.JSON(http.StatusBadRequest, &r)
+	} else {
+		r.Data = cnt
+		c.JSON(http.StatusOK, &r)
+	}
+
+}
+
+// @Summary  QuizDelete
+// @Security ApiKeyAuth
+// @Tags     Quiz
+// @Accept   json
+// @Param    id  query  string  true  "ID"
+// @Router   /quiz/delete [Delete]
+func DeleteQuiz(c *gin.Context) {
+	var cnt []shema.Quiz
+	var r response
+
+	q := tools.DB
+	id := c.Copy().DefaultQuery("id", "")
+	if id != "" {
+		q = q.Where("id = ?", id)
+	}
+
+	dbErr := q.Delete(&cnt).Error
+
+	if dbErr != nil {
+		r.Errors = append(r.Errors, dbErr.Error())
+		c.JSON(http.StatusBadRequest, &r)
+	} else {
+		r.Data = cnt
+		c.JSON(http.StatusOK, &r)
+	}
+
+}
+
+// @Summary  Questions
+// @Description  Вопросы
+// @Tags     Questions
+// @Accept   json
+// @Produce  json
+// @Param    id  query  string  false  "ID"
+// @Router   /questions/ [get]
+func Questions(c *gin.Context) {
+	var cnt []shema.Questions
+	var r response
+
+	q := tools.DB
+	id := c.Copy().DefaultQuery("id", "")
+	if id != "" {
+		q = q.Where("id = ?", id)
+	}
+
+	dbErr := q.
+		Preload("Answers").
+		Find(&cnt).Error
+
+	if dbErr != nil {
+		r.Errors = append(r.Errors, dbErr.Error())
+		c.JSON(http.StatusBadRequest, &r)
+	} else {
+		r.Data = cnt
+		c.JSON(http.StatusOK, &r)
+	}
+}
+
+// @Summary AddQuestions
+// @Security ApiKeyAuth
 // @Tags    Questions
 // @Accept  json
 // @Param   value   body   string   true   "Body"
 // @Router  /questions/add [post]
-func QuestionsAdd(c *gin.Context) {
+func AddQuestions(c *gin.Context) {
 	var cnt shema.Questions
+	var r response
 
-	c.BindJSON(&cnt)
-	tools.DB.Create(&cnt)
+	jsonErr := c.BindJSON(&cnt)
 
-	c.JSON(200, cnt)
-}
-
-// @Summary AnswersAll
-// @Tags    Answers
-// @Accept  json
-//@Router   /answers/all [get]
-func AnswersAll(c *gin.Context) {
-	var allanswers []shema.Answers
-
-	tools.DB.Find(&allanswers)
-
-	c.JSON(200, &allanswers)
-}
-
-// @Summary AnswersID
-// @Tags    Answers
-// @Accept  json
-// @Param   id     path   int   true   "id"
-//@Router   /answers/{id} [get]
-func AnswersId(c *gin.Context) {
-	var answers []shema.Answers
-
-	id, err := strconv.Atoi(c.Param("id"))
-	if err != nil {
-		logrus.Info(err)
+	if jsonErr != nil {
+		r.Errors = append(r.Errors, jsonErr.Error())
+		c.JSON(http.StatusBadRequest, &r)
 		return
 	}
 
-	tools.DB.Where(shema.Answers{Id: id}).Find(&answers)
+	dbErr := tools.DB.Create(&cnt).Error
+	if dbErr != nil {
+		r.Errors = append(r.Errors, dbErr.Error())
+		c.JSON(http.StatusBadRequest, &r)
+	} else {
+		r.Data = cnt
+		c.JSON(http.StatusOK, &r)
+	}
 
-	c.JSON(200, &answers)
 }
 
-// @Summary AnswersAdd
+// @Summary UpdateQuestions
+// @Security ApiKeyAuth
+// @Tags    Questions
+// @Accept  json
+// @Param   value   body   string   true   "Body"
+// @Router  /questions/put [put]
+func UpdateQuestions(c *gin.Context) {
+	var cnt shema.Questions
+	var r response
+
+	jsonErr := c.BindJSON(&cnt)
+
+	if jsonErr != nil {
+		r.Errors = append(r.Errors, jsonErr.Error())
+		c.JSON(http.StatusBadRequest, &r)
+		return
+	}
+
+	dbErr := tools.DB.
+		Save(&cnt).
+		Error
+	if dbErr != nil {
+		r.Errors = append(r.Errors, dbErr.Error())
+		c.JSON(http.StatusBadRequest, &r)
+	} else {
+		r.Data = cnt
+		c.JSON(http.StatusOK, &r)
+	}
+
+}
+
+// @Summary  QuestionsDelete
+// @Security ApiKeyAuth
+// @Tags     Questions
+// @Accept   json
+// @Param    id  query  string  true  "ID"
+// @Router   /questions/delete [Delete]
+func DeleteQuestions(c *gin.Context) {
+	var cnt []shema.Questions
+	var r response
+
+	q := tools.DB
+	id := c.Copy().DefaultQuery("id", "")
+	if id != "" {
+		q = q.Where("id = ?", id)
+	}
+
+	dbErr := q.Delete(&cnt).Error
+
+	if dbErr != nil {
+		r.Errors = append(r.Errors, dbErr.Error())
+		c.JSON(http.StatusBadRequest, &r)
+	} else {
+		r.Data = cnt
+		c.JSON(http.StatusOK, &r)
+	}
+
+}
+
+// @Summary  Answers
+// @Description  Вопросы
+// @Tags     Answers
+// @Accept   json
+// @Produce  json
+// @Param    id  query  string  false  "ID"
+// @Router   /answers/ [get]
+func Answers(c *gin.Context) {
+	var cnt []shema.Answers
+	var r response
+
+	q := tools.DB
+	id := c.Copy().DefaultQuery("id", "")
+	if id != "" {
+		q = q.Where("id = ?", id)
+	}
+
+	dbErr := q.
+		Preload("Cause").
+		Find(&cnt).Error
+
+	if dbErr != nil {
+		r.Errors = append(r.Errors, dbErr.Error())
+		c.JSON(http.StatusBadRequest, &r)
+	} else {
+		r.Data = cnt
+		c.JSON(http.StatusOK, &r)
+	}
+}
+
+// @Summary AddAnswers
+// @Security ApiKeyAuth
 // @Tags    Answers
 // @Accept  json
 // @Param   value   body   string   true   "Body"
 // @Router  /answers/add [post]
-func AnswersAdd(c *gin.Context) {
+func AddAnswers(c *gin.Context) {
 	var cnt shema.Answers
+	var r response
 
-	c.BindJSON(&cnt)
-	tools.DB.Create(&cnt)
+	jsonErr := c.BindJSON(&cnt)
 
-	c.JSON(200, cnt)
-}
-
-// @Summary CauseAll
-// @Tags    Cause
-// @Accept  json
-// @Param   input body shema.Cause true "Cause info"
-//@Router   /cause/all [get]
-func CauseAll(c *gin.Context) {
-	var allcause []shema.Cause
-
-	tools.DB.Find(&allcause)
-
-	c.JSON(200, &allcause)
-}
-
-// @Summary CauseID
-// @Tags    Cause
-// @Accept  json
-// @Param   id     path   int   true   "id"
-//@Router   /cause/{id} [get]
-func CauseId(c *gin.Context) {
-	var cause []shema.Cause
-
-	id, err := strconv.Atoi(c.Param("id"))
-	if err != nil {
-		logrus.Info(err)
+	if jsonErr != nil {
+		r.Errors = append(r.Errors, jsonErr.Error())
+		c.JSON(http.StatusBadRequest, &r)
 		return
 	}
 
-	tools.DB.Where(shema.Answers{Id: id}).Find(&cause)
+	dbErr := tools.DB.Create(&cnt).Error
+	if dbErr != nil {
+		r.Errors = append(r.Errors, dbErr.Error())
+		c.JSON(http.StatusBadRequest, &r)
+	} else {
+		r.Data = cnt
+		c.JSON(http.StatusOK, &r)
+	}
 
-	c.JSON(200, &cause)
 }
 
-// @Summary CauseAdd
+// @Summary UpdateAnswers
+// @Security ApiKeyAuth
+// @Tags    Answers
+// @Accept  json
+// @Param   value   body   string   true   "Body"
+// @Router  /answers/put [put]
+func UpdateAnswers(c *gin.Context) {
+	var cnt shema.Answers
+	var r response
+
+	jsonErr := c.BindJSON(&cnt)
+
+	if jsonErr != nil {
+		r.Errors = append(r.Errors, jsonErr.Error())
+		c.JSON(http.StatusBadRequest, &r)
+		return
+	}
+
+	dbErr := tools.DB.
+		Save(&cnt).
+		Error
+	if dbErr != nil {
+		r.Errors = append(r.Errors, dbErr.Error())
+		c.JSON(http.StatusBadRequest, &r)
+	} else {
+		r.Data = cnt
+		c.JSON(http.StatusOK, &r)
+	}
+
+}
+
+// @Summary  AnswersDelete
+// @Security ApiKeyAuth
+// @Tags     Answers
+// @Accept   json
+// @Param    id  query  string  true  "ID"
+// @Router   /answers/delete [Delete]
+func DeleteAnswers(c *gin.Context) {
+	var cnt []shema.Answers
+	var r response
+
+	q := tools.DB
+	id := c.Copy().DefaultQuery("id", "")
+	if id != "" {
+		q = q.Where("id = ?", id)
+	}
+
+	dbErr := q.Delete(&cnt).Error
+
+	if dbErr != nil {
+		r.Errors = append(r.Errors, dbErr.Error())
+		c.JSON(http.StatusBadRequest, &r)
+	} else {
+		r.Data = cnt
+		c.JSON(http.StatusOK, &r)
+	}
+
+}
+
+// @Summary  Cause
+// @Description  Вопросы
+// @Tags     Cause
+// @Accept   json
+// @Produce  json
+// @Param    id  query  string  false  "ID"
+// @Router   /cause/ [get]
+func Cause(c *gin.Context) {
+	var cnt []shema.Cause
+	var r response
+
+	q := tools.DB
+	id := c.Copy().DefaultQuery("id", "")
+	if id != "" {
+		q = q.Where("id = ?", id)
+	}
+
+	dbErr := q.Find(&cnt).Error
+
+	if dbErr != nil {
+		r.Errors = append(r.Errors, dbErr.Error())
+		c.JSON(http.StatusBadRequest, &r)
+	} else {
+		r.Data = cnt
+		c.JSON(http.StatusOK, &r)
+	}
+}
+
+// @Summary AddCause
+// @Security ApiKeyAuth
 // @Tags    Cause
 // @Accept  json
 // @Param   value   body   string   true   "Body"
 // @Router  /cause/add [post]
-func CauseAdd(c *gin.Context) {
+func AddCause(c *gin.Context) {
 	var cnt shema.Cause
+	var r response
 
-	c.BindJSON(&cnt)
-	tools.DB.Create(&cnt)
+	jsonErr := c.BindJSON(&cnt)
 
-	c.JSON(200, cnt)
-}
-
-// @Summary ResultAll
-// @Tags    Result
-// @Accept  json
-// @Param   input body shema.Result true "Result info"
-//@Router   /result/all [get]
-func ResultAll(c *gin.Context) {
-	var allresult []shema.Result
-
-	tools.DB.Find(&allresult)
-
-	c.JSON(200, &allresult)
-}
-
-// @Summary ResultID
-// @Tags    Result
-// @Accept  json
-// @Param   id     path   int   true   "id"
-//@Router   /result/{id} [get]
-func ResultId(c *gin.Context) {
-	var result []shema.Result
-
-	id, err := strconv.Atoi(c.Param("id"))
-	if err != nil {
-		logrus.Info(err)
+	if jsonErr != nil {
+		r.Errors = append(r.Errors, jsonErr.Error())
+		c.JSON(http.StatusBadRequest, &r)
 		return
 	}
 
-	tools.DB.Where(shema.Result{Id: id}).Find(&result)
+	dbErr := tools.DB.Create(&cnt).Error
+	if dbErr != nil {
+		r.Errors = append(r.Errors, dbErr.Error())
+		c.JSON(http.StatusBadRequest, &r)
+	} else {
+		r.Data = cnt
+		c.JSON(http.StatusOK, &r)
+	}
 
-	c.JSON(200, &result)
 }
 
-// @Summary ResultAdd
+// @Summary UpdateCause
+// @Security ApiKeyAuth
+// @Tags    Cause
+// @Accept  json
+// @Param   value   body   string   true   "Body"
+// @Router  /cause/put [put]
+func UpdateCause(c *gin.Context) {
+	var cnt shema.Cause
+	var r response
+
+	jsonErr := c.BindJSON(&cnt)
+
+	if jsonErr != nil {
+		r.Errors = append(r.Errors, jsonErr.Error())
+		c.JSON(http.StatusBadRequest, &r)
+		return
+	}
+
+	dbErr := tools.DB.
+		Save(&cnt).
+		Error
+	if dbErr != nil {
+		r.Errors = append(r.Errors, dbErr.Error())
+		c.JSON(http.StatusBadRequest, &r)
+	} else {
+		r.Data = cnt
+		c.JSON(http.StatusOK, &r)
+	}
+
+}
+
+// @Summary  CauseDelete
+// @Security ApiKeyAuth
+// @Tags     Cause
+// @Accept   json
+// @Param    id  query  string  true  "ID"
+// @Router   /cause/delete [Delete]
+func DeleteCause(c *gin.Context) {
+	var cnt []shema.Cause
+	var r response
+
+	q := tools.DB
+	id := c.Copy().DefaultQuery("id", "")
+	if id != "" {
+		q = q.Where("id = ?", id)
+	}
+
+	dbErr := q.Delete(&cnt).Error
+
+	if dbErr != nil {
+		r.Errors = append(r.Errors, dbErr.Error())
+		c.JSON(http.StatusBadRequest, &r)
+	} else {
+		r.Data = cnt
+		c.JSON(http.StatusOK, &r)
+	}
+
+}
+
+// @Summary  Result
+// @Description  Вопросы
+// @Tags     Result
+// @Accept   json
+// @Produce  json
+// @Param    id  query  string  false  "ID"
+// @Router   /result/ [get]
+func Result(c *gin.Context) {
+	var cnt []shema.Result
+	var r response
+
+	q := tools.DB
+	id := c.Copy().DefaultQuery("user_id", "")
+	if id != "" {
+		q = q.Where("user_id = ?", id)
+	}
+
+	dbErr := q.Find(&cnt).Error
+
+	if dbErr != nil {
+		r.Errors = append(r.Errors, dbErr.Error())
+		c.JSON(http.StatusBadRequest, &r)
+	} else {
+		r.Data = cnt
+		c.JSON(http.StatusOK, &r)
+	}
+}
+
+// @Summary AddResult
+// @Security ApiKeyAuth
 // @Tags    Result
 // @Accept  json
 // @Param   value   body   string   true   "Body"
 // @Router  /result/add [post]
-func ResultAdd(c *gin.Context) {
+func AddResult(c *gin.Context) {
 	var cnt shema.Result
+	var r response
 
-	c.BindJSON(&cnt)
-	tools.DB.Create(&cnt)
+	jsonErr := c.BindJSON(&cnt)
 
-	c.JSON(200, cnt)
+	if jsonErr != nil {
+		r.Errors = append(r.Errors, jsonErr.Error())
+		c.JSON(http.StatusBadRequest, &r)
+		return
+	}
+
+	dbErr := tools.DB.Create(&cnt).Error
+	if dbErr != nil {
+		r.Errors = append(r.Errors, dbErr.Error())
+		c.JSON(http.StatusBadRequest, &r)
+	} else {
+		r.Data = cnt
+		c.JSON(http.StatusOK, &r)
+	}
+
+}
+
+// @Summary UpdateResult
+// @Security ApiKeyAuth
+// @Tags    Result
+// @Accept  json
+// @Param   value   body   string   true   "Body"
+// @Router  /result/put [put]
+func UpdateResult(c *gin.Context) {
+	var cnt shema.Result
+	var r response
+
+	jsonErr := c.BindJSON(&cnt)
+
+	if jsonErr != nil {
+		r.Errors = append(r.Errors, jsonErr.Error())
+		c.JSON(http.StatusBadRequest, &r)
+		return
+	}
+
+	dbErr := tools.DB.
+		Save(&cnt).
+		Error
+	if dbErr != nil {
+		r.Errors = append(r.Errors, dbErr.Error())
+		c.JSON(http.StatusBadRequest, &r)
+	} else {
+		r.Data = cnt
+		c.JSON(http.StatusOK, &r)
+	}
+
+}
+
+// @Summary  ResultDelete
+// @Security ApiKeyAuth
+// @Tags     Result
+// @Accept   json
+// @Param    id  query  string  true  "ID"
+// @Router   /result/delete [Delete]
+func DeleteResult(c *gin.Context) {
+	var cnt []shema.Result
+	var r response
+
+	q := tools.DB
+	id := c.Copy().DefaultQuery("id", "")
+	if id != "" {
+		q = q.Where("id = ?", id)
+	}
+
+	dbErr := q.Delete(&cnt).Error
+
+	if dbErr != nil {
+		r.Errors = append(r.Errors, dbErr.Error())
+		c.JSON(http.StatusBadRequest, &r)
+	} else {
+		r.Data = cnt
+		c.JSON(http.StatusOK, &r)
+	}
+
 }

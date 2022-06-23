@@ -2,7 +2,7 @@ package shema
 
 type (
 	//Пользователь
-	Users struct {
+	User struct {
 		Id       int    `json:"id,omitempty" gorm:"primary_key"`
 		Name     string `json:"name,omitempty"`
 		Username string `json:"username,omitempty"`
@@ -34,10 +34,10 @@ type (
 
 	// Данные пользователя
 	UserData struct {
-		Id      int   `json:"id,omitempty" gorm:"primary_key"`
-		Users   Users `json:"user,omitempty" gorm:"foreignkey:Users"`
-		Count   int   `json:"count,omitempty"`
-		Payment bool  `json:"payment,omitempty"`
+		Id      int  `json:"id,omitempty" gorm:"primary_key"`
+		Users   User `json:"user,omitempty" gorm:"foreignkey:Users"`
+		Count   int  `json:"count,omitempty"`
+		Payment bool `json:"payment,omitempty"`
 	}
 
 	Login struct {

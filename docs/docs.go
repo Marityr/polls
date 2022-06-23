@@ -16,15 +16,44 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/answers/": {
+            "get": {
+                "description": "Вопросы",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Answers"
+                ],
+                "summary": "Answers",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID",
+                        "name": "id",
+                        "in": "query"
+                    }
+                ],
+                "responses": {}
+            }
+        },
         "/answers/add": {
             "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "consumes": [
                     "application/json"
                 ],
                 "tags": [
                     "Answers"
                 ],
-                "summary": "AnswersAdd",
+                "summary": "AddAnswers",
                 "parameters": [
                     {
                         "description": "Body",
@@ -39,40 +68,85 @@ const docTemplate = `{
                 "responses": {}
             }
         },
-        "/answers/all": {
-            "get": {
+        "/answers/delete": {
+            "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "consumes": [
                     "application/json"
                 ],
                 "tags": [
                     "Answers"
                 ],
-                "summary": "AnswersAll",
-                "responses": {}
-            }
-        },
-        "/answers/{id}": {
-            "get": {
-                "consumes": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Answers"
-                ],
-                "summary": "AnswersID",
+                "summary": "AnswersDelete",
                 "parameters": [
                     {
-                        "type": "integer",
-                        "description": "id",
+                        "type": "string",
+                        "description": "ID",
                         "name": "id",
-                        "in": "path",
+                        "in": "query",
                         "required": true
                     }
                 ],
                 "responses": {}
             }
         },
-        "/blockquiz/add/title": {
+        "/answers/put": {
+            "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Answers"
+                ],
+                "summary": "UpdateAnswers",
+                "parameters": [
+                    {
+                        "description": "Body",
+                        "name": "value",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/blockquiz/": {
+            "get": {
+                "description": "Блоки опросов",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "BlockQuiz"
+                ],
+                "summary": "BlockQuiz",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID",
+                        "name": "id",
+                        "in": "query"
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/blockquiz/add": {
             "post": {
                 "security": [
                     {
@@ -85,7 +159,7 @@ const docTemplate = `{
                 "tags": [
                     "BlockQuiz"
                 ],
-                "summary": "BlockQuizAdd",
+                "summary": "AddBlockQuiz",
                 "parameters": [
                     {
                         "description": "Body",
@@ -100,8 +174,63 @@ const docTemplate = `{
                 "responses": {}
             }
         },
-        "/blockquiz/all": {
+        "/blockquiz/delete": {
+            "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "BlockQuiz"
+                ],
+                "summary": "BlockQuizDelete",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/blockquiz/put": {
+            "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "BlockQuiz"
+                ],
+                "summary": "UpdateBlockQuiz",
+                "parameters": [
+                    {
+                        "description": "Body",
+                        "name": "value",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/cause/": {
             "get": {
+                "description": "Вопросы",
                 "consumes": [
                     "application/json"
                 ],
@@ -109,29 +238,15 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "BlockQuiz"
+                    "Cause"
                 ],
-                "summary": "BlockQuizAll",
-                "operationId": "BlockQuiz",
-                "responses": {}
-            }
-        },
-        "/blockquiz/{id}": {
-            "get": {
-                "consumes": [
-                    "application/json"
-                ],
-                "tags": [
-                    "BlockQuiz"
-                ],
-                "summary": "BlockQuizID",
+                "summary": "Cause",
                 "parameters": [
                     {
-                        "type": "integer",
-                        "description": "id",
+                        "type": "string",
+                        "description": "ID",
                         "name": "id",
-                        "in": "path",
-                        "required": true
+                        "in": "query"
                     }
                 ],
                 "responses": {}
@@ -139,13 +254,18 @@ const docTemplate = `{
         },
         "/cause/add": {
             "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "consumes": [
                     "application/json"
                 ],
                 "tags": [
                     "Cause"
                 ],
-                "summary": "CauseAdd",
+                "summary": "AddCause",
                 "parameters": [
                     {
                         "description": "Body",
@@ -160,45 +280,55 @@ const docTemplate = `{
                 "responses": {}
             }
         },
-        "/cause/all": {
-            "get": {
+        "/cause/delete": {
+            "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "consumes": [
                     "application/json"
                 ],
                 "tags": [
                     "Cause"
                 ],
-                "summary": "CauseAll",
+                "summary": "CauseDelete",
                 "parameters": [
                     {
-                        "description": "Cause info",
-                        "name": "input",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/shema.Cause"
-                        }
+                        "type": "string",
+                        "description": "ID",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
                     }
                 ],
                 "responses": {}
             }
         },
-        "/cause/{id}": {
-            "get": {
+        "/cause/put": {
+            "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "consumes": [
                     "application/json"
                 ],
                 "tags": [
                     "Cause"
                 ],
-                "summary": "CauseID",
+                "summary": "UpdateCause",
                 "parameters": [
                     {
-                        "type": "integer",
-                        "description": "id",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
+                        "description": "Body",
+                        "name": "value",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
                     }
                 ],
                 "responses": {}
@@ -217,7 +347,6 @@ const docTemplate = `{
                     "Auth"
                 ],
                 "summary": "SignIn",
-                "operationId": "login",
                 "parameters": [
                     {
                         "description": "credentials",
@@ -232,15 +361,44 @@ const docTemplate = `{
                 "responses": {}
             }
         },
+        "/questions/": {
+            "get": {
+                "description": "Вопросы",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Questions"
+                ],
+                "summary": "Questions",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID",
+                        "name": "id",
+                        "in": "query"
+                    }
+                ],
+                "responses": {}
+            }
+        },
         "/questions/add": {
             "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "consumes": [
                     "application/json"
                 ],
                 "tags": [
                     "Questions"
                 ],
-                "summary": "QuestionsAdd",
+                "summary": "AddQuestions",
                 "parameters": [
                     {
                         "description": "Body",
@@ -255,45 +413,79 @@ const docTemplate = `{
                 "responses": {}
             }
         },
-        "/questions/all": {
-            "get": {
+        "/questions/delete": {
+            "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "consumes": [
                     "application/json"
                 ],
                 "tags": [
                     "Questions"
                 ],
-                "summary": "QuestionsAll",
+                "summary": "QuestionsDelete",
                 "parameters": [
                     {
-                        "description": "Questions info",
-                        "name": "input",
+                        "type": "string",
+                        "description": "ID",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/questions/put": {
+            "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Questions"
+                ],
+                "summary": "UpdateQuestions",
+                "parameters": [
+                    {
+                        "description": "Body",
+                        "name": "value",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/shema.Questions"
+                            "type": "string"
                         }
                     }
                 ],
                 "responses": {}
             }
         },
-        "/questions/{id}": {
+        "/quiz/": {
             "get": {
+                "description": "Опрос",
                 "consumes": [
                     "application/json"
                 ],
-                "tags": [
-                    "Questions"
+                "produces": [
+                    "application/json"
                 ],
-                "summary": "QuestionsID",
+                "tags": [
+                    "Quiz"
+                ],
+                "summary": "Quiz",
                 "parameters": [
                     {
-                        "type": "integer",
-                        "description": "id",
+                        "type": "string",
+                        "description": "ID",
                         "name": "id",
-                        "in": "path",
-                        "required": true
+                        "in": "query"
                     }
                 ],
                 "responses": {}
@@ -301,13 +493,18 @@ const docTemplate = `{
         },
         "/quiz/add": {
             "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "consumes": [
                     "application/json"
                 ],
                 "tags": [
                     "Quiz"
                 ],
-                "summary": "QuizAdd",
+                "summary": "AddQuiz",
                 "parameters": [
                     {
                         "description": "Body",
@@ -322,45 +519,79 @@ const docTemplate = `{
                 "responses": {}
             }
         },
-        "/quiz/all": {
-            "get": {
+        "/quiz/delete": {
+            "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "consumes": [
                     "application/json"
                 ],
                 "tags": [
                     "Quiz"
                 ],
-                "summary": "QuizAll",
+                "summary": "QuizDelete",
                 "parameters": [
                     {
-                        "description": "Quiz info",
-                        "name": "input",
+                        "type": "string",
+                        "description": "ID",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/quiz/put": {
+            "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Quiz"
+                ],
+                "summary": "UpdateQuiz",
+                "parameters": [
+                    {
+                        "description": "Body",
+                        "name": "value",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/shema.Quiz"
+                            "type": "string"
                         }
                     }
                 ],
                 "responses": {}
             }
         },
-        "/quiz/{id}": {
+        "/result/": {
             "get": {
+                "description": "Вопросы",
                 "consumes": [
                     "application/json"
                 ],
-                "tags": [
-                    "Quiz"
+                "produces": [
+                    "application/json"
                 ],
-                "summary": "QuizID",
+                "tags": [
+                    "Result"
+                ],
+                "summary": "Result",
                 "parameters": [
                     {
-                        "type": "integer",
-                        "description": "id",
+                        "type": "string",
+                        "description": "ID",
                         "name": "id",
-                        "in": "path",
-                        "required": true
+                        "in": "query"
                     }
                 ],
                 "responses": {}
@@ -368,13 +599,18 @@ const docTemplate = `{
         },
         "/result/add": {
             "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "consumes": [
                     "application/json"
                 ],
                 "tags": [
                     "Result"
                 ],
-                "summary": "ResultAdd",
+                "summary": "AddResult",
                 "parameters": [
                     {
                         "description": "Body",
@@ -389,45 +625,82 @@ const docTemplate = `{
                 "responses": {}
             }
         },
-        "/result/all": {
-            "get": {
+        "/result/delete": {
+            "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "consumes": [
                     "application/json"
                 ],
                 "tags": [
                     "Result"
                 ],
-                "summary": "ResultAll",
+                "summary": "ResultDelete",
                 "parameters": [
                     {
-                        "description": "Result info",
-                        "name": "input",
+                        "type": "string",
+                        "description": "ID",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/result/put": {
+            "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Result"
+                ],
+                "summary": "UpdateResult",
+                "parameters": [
+                    {
+                        "description": "Body",
+                        "name": "value",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/shema.Result"
+                            "type": "string"
                         }
                     }
                 ],
                 "responses": {}
             }
         },
-        "/result/{id}": {
+        "/signup": {
             "get": {
+                "description": "SignUp",
                 "consumes": [
                     "application/json"
                 ],
-                "tags": [
-                    "Result"
+                "produces": [
+                    "application/json"
                 ],
-                "summary": "ResultID",
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "SignUp",
                 "parameters": [
                     {
-                        "type": "integer",
-                        "description": "id",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
+                        "description": "credentials",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/handler.signup"
+                        }
                     }
                 ],
                 "responses": {}
@@ -435,58 +708,7 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "shema.BlockQuiz": {
-            "type": "object",
-            "properties": {
-                "id": {
-                    "type": "integer"
-                },
-                "quiz": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/shema.Quiz"
-                    }
-                },
-                "title": {
-                    "type": "string"
-                }
-            }
-        },
-        "shema.Cause": {
-            "type": "object",
-            "properties": {
-                "addition": {
-                    "type": "string"
-                },
-                "description": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "title": {
-                    "type": "string"
-                }
-            }
-        },
-        "shema.Group": {
-            "type": "object",
-            "properties": {
-                "id": {
-                    "type": "integer"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "permission": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/shema.Permissions"
-                    }
-                }
-            }
-        },
-        "shema.Login": {
+        "handler.signup": {
             "type": "object",
             "required": [
                 "password",
@@ -501,130 +723,13 @@ const docTemplate = `{
                 }
             }
         },
-        "shema.Models": {
+        "shema.Login": {
             "type": "object",
+            "required": [
+                "password",
+                "username"
+            ],
             "properties": {
-                "id": {
-                    "type": "integer"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "permission": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/shema.Permissions"
-                    }
-                }
-            }
-        },
-        "shema.Permissions": {
-            "type": "object",
-            "properties": {
-                "group": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/shema.Group"
-                    }
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "mark": {
-                    "type": "string"
-                },
-                "models": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/shema.Models"
-                    }
-                }
-            }
-        },
-        "shema.Questions": {
-            "type": "object",
-            "properties": {
-                "id": {
-                    "type": "integer"
-                },
-                "legend": {
-                    "type": "string"
-                },
-                "quiz": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/shema.Quiz"
-                    }
-                },
-                "title": {
-                    "type": "string"
-                }
-            }
-        },
-        "shema.Quiz": {
-            "type": "object",
-            "properties": {
-                "blockquiz": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/shema.BlockQuiz"
-                    }
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "legend": {
-                    "type": "string"
-                },
-                "questions": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/shema.Questions"
-                    }
-                },
-                "topic": {
-                    "type": "string"
-                }
-            }
-        },
-        "shema.Result": {
-            "type": "object",
-            "properties": {
-                "cause": {
-                    "$ref": "#/definitions/shema.Cause"
-                },
-                "color": {
-                    "type": "string"
-                },
-                "count": {
-                    "type": "integer"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "questions": {
-                    "$ref": "#/definitions/shema.Questions"
-                },
-                "result": {
-                    "type": "integer"
-                },
-                "user_id": {
-                    "$ref": "#/definitions/shema.Users"
-                }
-            }
-        },
-        "shema.Users": {
-            "type": "object",
-            "properties": {
-                "group": {
-                    "$ref": "#/definitions/shema.Group"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "name": {
-                    "type": "string"
-                },
                 "password": {
                     "type": "string"
                 },

@@ -24,7 +24,7 @@ func Init() {
 	}
 
 	db.AutoMigrate(
-		&shema.Users{},
+		&shema.User{},
 		&shema.Group{},
 		&shema.Permissions{},
 		&shema.Models{},
