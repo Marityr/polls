@@ -8,9 +8,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-//TODO добавить обработку ошибок
-//TODO переделать эндпоинты с queryparam
-//WARN переделать эндпоинты с queryparam
 type response struct {
 	Errors []string
 	Data   interface{}

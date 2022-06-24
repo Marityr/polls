@@ -123,6 +123,9 @@ func HandlerInit() {
 		}
 	}
 
+	rd.MaxMultipartMemory = 8 << 20 // 8 MiB
+	r.POST("/upload", UploadFile)
+
 	rd.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 	rd.Run()
 }

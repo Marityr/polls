@@ -11,7 +11,7 @@ import (
 var DB *gorm.DB
 
 func Init() {
-	dbURL := "postgres://mojas:1111@localhost:5432/pollsdb"
+	dbURL := "postgres://postgres:1111@localhost:5432/polls"
 
 	db, err := gorm.Open(postgres.Open(dbURL), &gorm.Config{
 		// отключение зависимости связей на уровне базы

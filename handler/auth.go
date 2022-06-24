@@ -14,6 +14,8 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
+//TODO Сделать авторизацию по базе
+
 type User struct {
 	UserName  string
 	FirstName string
